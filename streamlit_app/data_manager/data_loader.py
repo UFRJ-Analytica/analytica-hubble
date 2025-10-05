@@ -4,14 +4,25 @@ import geopandas as gpd
 # --- Load geodata for Rio de Janeiro municipalities
 # Using EarthWorks Stanford GeoJSON data for RJ municipalities
 #"https://earthworks.stanford.edu/catalog/stanford-hc979qh6228"
+data_path='streamlit_app/data_manager/geojson/'
+
 @st.cache_data
-def load_polygon():
+def load_brazil_polygon():   
     try:
-        gdf = gpd.read_file('streamlit_app/data_manager/stanford-hc979qh6228-geojson.json')
+        gdf_brazil = gpd.read_file(data_path+'geojson_brazil_admin_states.json')
+        #gdf = gpd.read_file(data_path+'stanford-hc979qh6228-geojson.json')
     except Exception as e:
         st.error("Failed to load state data: " + str(e))
         st.stop()
-    return gdf
+    return gdf_brazil
+
+def load_polygon_state(state_code):
+    try:
+        gdf_state = gpd.read_file(f"{data_path}geojs-{state_code}-mun.json")
+    except Exception as e:
+        st.error("Failed to load state data: " + str(e))
+        st.stop()
+    return gdf_state
 
 def state_bounds(gdf):
     bounds = gdf.total_bounds

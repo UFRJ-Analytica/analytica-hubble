@@ -13,10 +13,10 @@ def masks(gdf):
 
 def styledMap():
     # --- Map centered in the state
-    m = folium.Map(location=[-22.9, -43.2], 
-            zoom_start=8, 
-            min_zoom=8, 
-            max_bounds=True, 
+    # RJ location=[-22.9, -43.2]
+    m = folium.Map( 
+            #zoom_start=3, 
+            #min_zoom=8, 
             tiles="cartodb positron")
     
     # --- Remove black box when selecting

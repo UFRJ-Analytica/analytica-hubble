@@ -9,11 +9,36 @@ import data_manager.data_loader as dl
 st.set_page_config(layout="wide")
 
 # --- Title and description
-st.markdown("<h1 style='color: #66d575;'>Rio de Janeiro City Hazard Monitoring</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color: #66d575;'>Brazil Cities Hazard Monitoring</h1>", unsafe_allow_html=True)
 
-# --- Load data
-gdf = dl.load_polygon()
-municipalities = gdf['nome'].sort_values().unique().tolist()
+# --- Load Brazil polygons
+gdf_brazil = dl.load_brazil_polygon()
+
+# --- State selection
+states = gdf_brazil['name'].sort_values().unique().tolist()
+
+# Maintain selected state in session
+if "selected_state" not in st.session_state:
+    st.session_state["selected_state"] = states[0]
+
+selected_state = st.selectbox(
+    "State",
+    states,
+    index=states.index(st.session_state["selected_state"]),
+    key="state_selector"
+)
+
+# --- If state changes, reset city selection
+if selected_state != st.session_state["selected_state"]:
+    st.session_state["selected_state"] = selected_state
+    st.session_state["selected_city_session"] = None
+
+# --- Load GDF for selected state
+code = gdf_brazil[gdf_brazil['name'] == selected_state].iloc[0]['id']
+gdf = dl.load_polygon_state(code)
+
+city_name_key = 'name'
+municipalities = gdf[city_name_key].sort_values().unique().tolist()
 
 # --- Initialize session state
 if "selected_city_session" not in st.session_state:
@@ -33,18 +58,18 @@ with colMap:
 
     # --- Add dark mask outside state
     folium.GeoJson(
-        map.masks(gdf),
+        map.masks(gdf_brazil),
         style_function=lambda x: {"fillColor": "black", "color": "black", "fillOpacity": 0.7}
     ).add_to(m)
 
     # --- Add all municipalities polygons
-    popup = folium.GeoJsonPopup(fields=["nome"], aliases=["City:"])
+    popup = folium.GeoJsonPopup(fields=[city_name_key], aliases=["City:"])
     folium.GeoJson(
         gdf,
         name="Municipalities",
         style_function=lambda x: {"fillColor": "#E0E0E0", "color": "gray", "weight": 1, "fillOpacity": 0.4},
         highlight_function=lambda x: {"fillColor": "#1976D2", "color": "#1976D2", "fillOpacity": 0.6},
-        tooltip=folium.GeoJsonTooltip(fields=["nome"], aliases=["City:"]),
+        tooltip=folium.GeoJsonTooltip(fields=[city_name_key], aliases=["City:"]),
         zoom_on_click=True,
         popup=popup,
         popup_keep_highlighted=True,
@@ -52,13 +77,13 @@ with colMap:
 
     # --- Highlight currently selected city
     if st.session_state["selected_city_session"]:
-        city_gdf = gdf[gdf["nome"] == st.session_state["selected_city_session"]]
+        city_gdf = gdf[gdf[city_name_key] == st.session_state["selected_city_session"]]
         folium.GeoJson(
             city_gdf,
             name="Selected City",
             style_function=lambda x: {"fillColor": "#1976D2", "weight": 2, "fillOpacity": 0.6},
             highlight_function=lambda x: {"fillColor": "#1976D2", "color": "#1976D2", "fillOpacity": 0.6},
-            tooltip=folium.GeoJsonTooltip(fields=["nome"], aliases=["City:"]),
+            tooltip=folium.GeoJsonTooltip(fields=[city_name_key], aliases=["City:"]),
         ).add_to(m)
 
     # --- Display map and capture interactions
@@ -70,7 +95,6 @@ with colMap:
 with colDesc:
     st.markdown("#### Select the City you want to observe")
 
-    # --- City selector synced with session state
     selected_city = st.selectbox(
         "Municipality",
         municipalities,
@@ -88,10 +112,9 @@ with colDesc:
     if st_data and st_data.get("last_active_drawing"):
         properties = st_data["last_active_drawing"].get("properties", {})
 
-        if properties and "nome" in properties:
-            clicked_city = properties["nome"]
+        if properties and city_name_key in properties:
+            clicked_city = properties[city_name_key]
 
-            # Sync map click → selectbox
             if clicked_city != st.session_state["selected_city_session"]:
                 st.session_state["selected_city_session"] = clicked_city
                 st.rerun()
