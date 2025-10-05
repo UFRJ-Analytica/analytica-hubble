@@ -3,8 +3,8 @@ import geopandas as gpd
 import folium
 from streamlit_folium import st_folium
 from shapely.geometry import Point
-import map_manager.map as map
-import data_manager.data_loader as dl
+import flui_app.map_manager.map as map
+import flui_app.data_manager.data_loader as dl
 
 st.set_page_config(layout="wide")
 

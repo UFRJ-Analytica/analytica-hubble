@@ -4,7 +4,7 @@ import geopandas as gpd
 # --- Load geodata for Rio de Janeiro municipalities
 # Using EarthWorks Stanford GeoJSON data for RJ municipalities
 #"https://earthworks.stanford.edu/catalog/stanford-hc979qh6228"
-data_path='streamlit_app/data_manager/geojson/'
+data_path='flui_app/data_manager/geojson/'
 
 @st.cache_data
 def load_brazil_polygon():   
