@@ -7,7 +7,7 @@ import geopandas as gpd
 @st.cache_data
 def load_polygon():
     try:
-        gdf = gpd.read_file('data_manager/stanford-hc979qh6228-geojson.json')
+        gdf = gpd.read_file('streamlit_app/data_manager/stanford-hc979qh6228-geojson.json')
     except Exception as e:
         st.error("Failed to load state data: " + str(e))
         st.stop()
@@ -45,5 +45,3 @@ def display_city_info(selected_city, gdf):
         else:
             col.metric(f"{key}",  f"{val}")
         count+=1
-
-    st.markdown(f"{gdf[gdf["nome"] == selected_city]['latitudese']}")
