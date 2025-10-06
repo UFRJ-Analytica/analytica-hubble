@@ -35,10 +35,12 @@ def state_bounds(gdf):
 
 def display_city_info(selected_city, gdf):
     # --- City Information Section
-    st.header(f"{selected_city} City Information")
+    st.subheader(f"{selected_city} City Information")
+    
+    """
 
-    col1, col2 = st.columns(2)
-
+    
+    """
     # Add more info (example placeholders)
     city_info = {
         "Hazard Risk Index": "9.5",
@@ -47,12 +49,14 @@ def display_city_info(selected_city, gdf):
     }
 
     count=0
-    cols=[col1, col2]
+    cols_size=3
+    col1, col2, col3 = st.columns([1,1,2])
+    cols=[col1, col2, col3]
 
     for key, val in city_info.items():
-        col = cols[count%2]
-        if(count==2):
-            st.metric(f"{key}",  f"{val}")
+        col = cols[count%cols_size]
+        if(count==cols_size):
+            st.metric(f"{key}",  f"{val}", width="content")
         else:
-            col.metric(f"{key}",  f"{val}")
+            col.metric(f"{key}",  f"{val}", width="content")
         count+=1
