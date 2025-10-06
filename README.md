@@ -67,3 +67,17 @@ streamlit run radardeinundacoes.py
 ```
 
 Seu navegador será aberto automaticamente com a aplicação rodando no endereço `http://localhost:8501`.
+
+
+### Satélites Utilizados
+
+- **NASA/NASADEM_HGT/001** - https://developers.google.com/earth-engine/datasets/catalog/NASA_NASADEM_HGT_001?hl=pt-br
+- **CIESIN/GPWv411/GPW_Population_Count** - https://developers.google.com/earth-engine/datasets/catalog/CIESIN_GPWv411_GPW_Population_Count?hl=pt-br
+- **MODIS/061/MCD12Q1** - https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD12Q1?hl=pt-br
+- **NASA/GPM_L3/IMERG_MONTHLY_V06** - https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_MONTHLY_V06?hl=pt-br
+- **NASA/FLDAS/NOAH01/C/GL/M/V001** - https://developers.google.com/earth-engine/datasets/catalog/NASA_FLDAS_NOAH01_C_GL_M_V001?hl=pt-br
+- **NASA/SMAP/SPL4SMGP/008** - https://developers.google.com/earth-engine/datasets/catalog/NASA_SMAP_SPL4SMGP_008?hl=pt-br
+- **LANDSAT/LT05/C02/T1_L2** - https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C02_T1_L2?hl=pt-br
+- **LANDSAT/LE07/C02/T1_L2** - https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LE07_C02_T1_L2?hl=pt-br
+- **LANDSAT/LC08/C02/T1_L2** - https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2?hl=pt-br
+- **LANDSAT/LC09/C02/T1_L2** - https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2?hl=pt-br
