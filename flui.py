@@ -6,7 +6,7 @@ from PIL import Image
 import altair as alt
 import flui_app.map_manager.map as map
 import flui_app.data_manager.data_loader as dl
-import yfinance as yf
+import pandas as pd
 
 st.set_page_config(layout="wide")
  # --- Title and description
@@ -17,104 +17,12 @@ rightIcon.image(Image.open("resources/img/flui-br.png"), width=250)
 """
 
 STOCKS = [
-    "AAPL",
-    "ABBV",
-    "ACN",
-    "ADBE",
-    "ADP",
-    "AMD",
-    "AMGN",
-    "AMT",
-    "AMZN",
-    "APD",
-    "AVGO",
-    "AXP",
-    "BA",
-    "BK",
-    "BKNG",
-    "BMY",
-    "BRK.B",
-    "BSX",
-    "C",
-    "CAT",
-    "CI",
-    "CL",
-    "CMCSA",
-    "COST",
-    "CRM",
-    "CSCO",
-    "CVX",
-    "DE",
-    "DHR",
-    "DIS",
-    "DUK",
-    "ELV",
-    "EOG",
-    "EQR",
-    "FDX",
-    "GD",
-    "GE",
-    "GILD",
-    "GOOG",
-    "GOOGL",
-    "HD",
-    "HON",
-    "HUM",
-    "IBM",
-    "ICE",
-    "INTC",
-    "ISRG",
-    "JNJ",
-    "JPM",
-    "KO",
-    "LIN",
-    "LLY",
-    "LMT",
-    "LOW",
-    "MA",
-    "MCD",
-    "MDLZ",
-    "META",
-    "MMC",
-    "MO",
-    "MRK",
-    "MSFT",
-    "NEE",
-    "NFLX",
-    "NKE",
-    "NOW",
-    "NVDA",
-    "ORCL",
-    "PEP",
-    "PFE",
-    "PG",
-    "PLD",
-    "PM",
-    "PSA",
-    "REGN",
-    "RTX",
-    "SBUX",
-    "SCHW",
-    "SLB",
-    "SO",
-    "SPGI",
-    "T",
-    "TJX",
-    "TMO",
-    "TSLA",
-    "TXN",
-    "UNH",
-    "UNP",
-    "UPS",
-    "V",
-    "VZ",
-    "WFC",
-    "WM",
-    "WMT",
-    "XOM",
+    "NDWI",
+    "Tmean",
+    "precipitation",
 ]
 
-DEFAULT_STOCKS = ["AAPL", "MSFT", "GOOGL", "NVDA", "AMZN", "TSLA", "META"]
+DEFAULT_STOCKS = ["NDWI", "Tmean","precipitation"]
 
 def stocks_to_str(stocks):
     return ",".join(stocks)
@@ -269,14 +177,16 @@ with colDesc:
         "20 Years": "20y",
     }
 
+    data = pd.read_csv('flui_app/data_manager/output.csv', sep=',')
 
     @st.cache_resource(show_spinner=False)
     def load_data(tickers, period):
-        tickers_obj = yf.Tickers(tickers)
-        data = tickers_obj.history(period=period)
+        #tickers_obj = yf.Tickers(tickers)
+        data = pd.read_csv('flui_app/data_manager/output.csv', sep=',')
+        #data = tickers.history(period=period)
         if data is None:
-            raise RuntimeError("YFinance returned no data.")
-        return data["Close"]
+            raise RuntimeError("Returned no data.")
+        return data
     
     horizon = st.pills(
         "Time horizon",
@@ -284,24 +194,27 @@ with colDesc:
         default="6 Months",
     )
 
-    
-    
+
     data = load_data(tickers, horizon_map[horizon])
+    df_sorted = data.sort_values('date', ascending=True)
     
-    normalized = data.div(data.iloc[0])
+    #normalized = data.div(data.iloc[0])
 
     with chart_cell:
-        st.altair_chart(
-            alt.Chart(
-                normalized.reset_index().melt(
-                    id_vars=["Date"], var_name="Stock", value_name="Normalized price"
-                )
-            )
-            .mark_line()
+        chart = (
+            alt.Chart(df_sorted)
+            .mark_line(color="#1b9e77")  # You can change color if desired
             .encode(
-                alt.X("Date:T"),
-                alt.Y("Normalized price:Q").scale(zero=False),
-                alt.Color("Stock:N"),
+                x=alt.X("date:T", title="Date"),
+                y=alt.Y("precipitation:Q", title="Precipitation (mm)"),
+                tooltip=["date:T", "precipitation:Q"]
             )
-            .properties(height=400)
+            .properties(
+                width=700,
+                height=350,
+                title="Precipitation Over Time"
+            )
+            .interactive()  # allows zooming and panning
         )
+
+        st.altair_chart(chart, use_container_width=True)
