@@ -77,7 +77,7 @@ with colDesc:
         )
 
         tickers = leftInput.multiselect(
-            "Stock tickers",
+            "Weather variables",
             options=sorted(set(STOCKS) | set(st.session_state.tickers_input)),
             default=st.session_state.tickers_input,
             placeholder="Choose stocks to compare. Example: NVDA",

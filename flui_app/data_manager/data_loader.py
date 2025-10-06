@@ -43,8 +43,8 @@ def display_city_info(selected_city, gdf):
     """
     # Add more info (example placeholders)
     city_info = {
-        "Hazard Risk Index": "9.5",
-        "Hazard Frequency": "1/year",
+        "Flood Risk Index": "9.5",
+        "Flood Frequency": "1/year",
         "Classification": "🔴 high-risk area",
     }
 
